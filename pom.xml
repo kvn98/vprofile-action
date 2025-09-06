@@ -20,6 +20,9 @@
         <logback.version>1.1.3</logback.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- Added encoding properties to fix warnings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
@@ -165,7 +168,8 @@
 		    <version>2.8.2</version>
 		</dependency>
     </dependencies>
-     <build>
+    
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
@@ -178,6 +182,36 @@
                     </webApp>
                 </configuration>
             </plugin>
+            
+            <!-- Added Checkstyle Plugin Configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <!-- Use Google's more lenient rules instead of Sun's strict rules -->
+                    <configLocation>google_checks.xml</configLocation>
+                    <encoding>UTF-8</encoding>
+                    <consoleOutput>true</consoleOutput>
+                    <!-- Don't fail the build on violations -->
+                    <failsOnError>false</failsOnError>
+                    <failOnViolation>false</failOnViolation>
+                    <!-- Only report errors, not warnings -->
+                    <violationSeverity>error</violationSeverity>
+                    <!-- Exclude generated files and test files if needed -->
+                    <excludes>**/target/**/*</excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
 		<!-- CODE COVERAGE -->
 	            <plugin>
                      <groupId>org.apache.maven.plugins</groupId>
